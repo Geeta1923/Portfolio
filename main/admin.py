@@ -27,7 +27,7 @@ class HeaderTitleAdmin(SimpleBaseAdmin):
 
 @admin.register(HeroSection)
 class HeroSectionAdmin(admin.ModelAdmin):
-    list_display = ('title', 'subtitle', 'image_preview', 'is_active')
+    list_display = ('title', 'subtitle', 'image_preview', 'resume', 'is_active')
     list_editable = ('is_active',)
 
     def image_preview(self, obj):

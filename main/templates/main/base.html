@@ -1,0 +1,641 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | {{ header_title.title|default:"Geeta R Galagali" }}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            light: '#06b6d4',
+                            DEFAULT: '#7c3aed',
+                            dark: '#5b21b6',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           CSS VARIABLES — DARK MODE (default)
+        ============================================ */
+        :root {
+            --bg: #04040f;
+            --bg2: #080818;
+            --bg3: #0d0d25;
+            --glass: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.07);
+            --navbar-bg: rgba(4, 4, 15, 0.85);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --text-faint: rgba(255, 255, 255, 0.06);
+            --scrollbar: #04040f;
+            --card-shadow: rgba(124, 58, 237, 0.15);
+            --mesh1: rgba(124, 58, 237, 0.12);
+            --mesh2: rgba(6, 182, 212, 0.10);
+            --border-sec: rgba(255, 255, 255, 0.08);
+            --input-bg: rgba(255, 255, 255, 0.03);
+            --input-border: rgba(255, 255, 255, 0.1);
+            --autofill-bg: #0a0a1a;
+        }
+
+        /* ============================================
+           CSS VARIABLES — LIGHT MODE
+        ============================================ */
+        html.light-mode {
+            --bg: #f0f2ff;
+            --bg2: #e8ebff;
+            --bg3: #ffffff;
+            --glass: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(124, 58, 237, 0.18);
+            --glass-hover: rgba(255, 255, 255, 0.95);
+            --navbar-bg: rgba(240, 242, 255, 0.90);
+            --text: #1a1a2e;
+            --text-muted: #4a5568;
+            --text-faint: rgba(124, 58, 237, 0.08);
+            --scrollbar: #e8ebff;
+            --card-shadow: rgba(124, 58, 237, 0.10);
+            --mesh1: rgba(124, 58, 237, 0.06);
+            --mesh2: rgba(6, 182, 212, 0.05);
+            --border-sec: rgba(124, 58, 237, 0.12);
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --input-border: rgba(124, 58, 237, 0.2);
+            --autofill-bg: #f0f2ff;
+        }
+
+        /* ============================================
+           BASE STYLES — use variables everywhere
+        ============================================ */
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            background: var(--bg);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .font-heading {
+            font-family: 'Outfit', sans-serif;
+            color: var(--text);
+        }
+
+        p,
+        span,
+        li,
+        label,
+        div {
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* Background mesh */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 10%, var(--mesh1) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 80%, var(--mesh2) 0%, transparent 60%);
+            transition: background 0.4s ease;
+        }
+
+        /* Glass card */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .glass:hover {
+            background: var(--glass-hover);
+            border-color: rgba(124, 58, 237, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px var(--card-shadow);
+        }
+
+        /* Gradient text */
+        .grad {
+            background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Glow button */
+        .btn-glow {
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            border-radius: 12px;
+            padding: 12px 28px;
+            color: white !important;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-glow:hover {
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #7c3aed;
+            border-radius: 3px;
+        }
+
+        /* Nav link */
+        .nav-link {
+            position: relative;
+            color: var(--text-muted);
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Navbar */
+        .navbar-glass {
+            background: var(--navbar-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border-sec);
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+
+        /* Section borders */
+        .section-border {
+            border-top: 1px solid var(--border-sec);
+        }
+
+        /* Text color classes using variables */
+        .text-primary {
+            color: var(--text) !important;
+        }
+
+        .text-secondary {
+            color: var(--text-muted) !important;
+        }
+
+        /* Input fields */
+        .glass-input {
+            background: var(--input-bg) !important;
+            border: 1px solid var(--input-border) !important;
+            border-radius: 0.5rem;
+            color: var(--text) !important;
+            width: 100%;
+            outline: none;
+            padding: 1rem;
+            transition: all 0.3s;
+        }
+
+        .glass-input:focus {
+            border-color: #06b6d4 !important;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .glass-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Autofill override */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px var(--autofill-bg) inset !important;
+            -webkit-text-fill-color: var(--text) !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        /* Timeline dot */
+        .timeline-dot-purple {
+            background: var(--bg);
+            border: 4px solid #7c3aed;
+            box-shadow: 0 0 15px #7c3aed;
+        }
+
+        .timeline-dot-cyan {
+            background: var(--bg);
+            border: 4px solid #06b6d4;
+            box-shadow: 0 0 15px #06b6d4;
+        }
+
+        /* Light mode card text overrides */
+        html.light-mode .glass h1,
+        html.light-mode .glass h2,
+        html.light-mode .glass h3,
+        html.light-mode .glass h4,
+        html.light-mode h1,
+        html.light-mode h2,
+        html.light-mode h3,
+        html.light-mode h4 {
+            color: var(--text);
+        }
+
+        html.light-mode .glass p,
+        html.light-mode .glass span:not(.grad),
+        html.light-mode p,
+        html.light-mode label {
+            color: var(--text-muted);
+        }
+
+        html.light-mode .glass {
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Toggle button */
+        #theme-toggle {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 3px;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        #theme-toggle:hover {
+            border-color: rgba(124, 58, 237, 0.5);
+            box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
+        }
+
+        #toggle-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(0);
+            user-select: none;
+        }
+
+        html.light-mode #toggle-circle {
+            transform: translateX(24px);
+        }
+
+        /* Chat window bg */
+        #ai-chat-window {
+            background: var(--bg2) !important;
+        }
+
+        #chatMessages {
+            background: var(--bg) !important;
+        }
+
+        /* Typing dots */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 10px 15px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+            backdrop-filter: blur(20px);
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: #06b6d4;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: -.32s
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: -.16s
+        }
+
+        @keyframes bounce {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0)
+            }
+
+            40% {
+                transform: scale(1)
+            }
+        }
+    </style>
+
+    <!-- Apply theme BEFORE page renders to prevent flash -->
+    <script>
+            (function () {
+                var saved = localStorage.getItem('theme') || 'dark';
+                if (saved === 'light') {
+                    document.documentElement.classList.add('light-mode');
+                }
+            })();
+    </script>
+</head>
+
+<body class="font-sans antialiased overflow-x-hidden relative">
+
+    <!-- Navbar -->
+    <nav class="navbar-glass fixed w-full z-50 px-6 py-4 flex justify-between items-center transition-all duration-300">
+        <a href="#home" class="text-2xl font-bold tracking-widest flex items-center font-heading group">
+            <span class="grad whitespace-nowrap">{% if header_title %}{{ header_title.title }}{% else %}Geeta R Galagali{% endif %}</span>
+        </a>
+
+        <div class="hidden md:flex space-x-6 items-center flex-wrap">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#skills" class="nav-link">Skills</a>
+            <a href="#projects" class="nav-link">Projects</a>
+
+            <!-- Dark/Light Toggle -->
+            <button id="theme-toggle" title="Toggle dark/light mode" aria-label="Toggle theme">
+                <span id="toggle-circle">🌙</span>
+            </button>
+
+            <a href="#contact" class="btn-glow">Contact</a>
+        </div>
+
+        <!-- Mobile -->
+        <div class="flex items-center gap-3 md:hidden">
+            <button id="theme-toggle-mobile" title="Toggle theme" aria-label="Toggle theme"
+                style="width:44px;height:24px;background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;cursor:pointer;display:flex;align-items:center;padding:2px;transition:all 0.3s;flex-shrink:0;">
+                <span id="toggle-circle-mobile"
+                    style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:11px;transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);transform:translateX(0);">🌙</span>
+            </button>
+            <button class="text-brand-light text-2xl" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu"
+        class="hidden fixed top-16 left-0 right-0 z-40 navbar-glass px-6 py-4 flex-col gap-4 md:hidden">
+        <a href="#home" class="nav-link py-2">Home</a>
+        <a href="#about" class="nav-link py-2">About</a>
+        <a href="#skills" class="nav-link py-2">Skills</a>
+        <a href="#projects" class="nav-link py-2">Projects</a>
+        <a href="#contact" class="btn-glow text-center mt-2">Contact</a>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-20 py-10 glass !border-x-0 !border-b-0 !rounded-none text-center relative z-10 w-full">
+        <p class="font-semibold mb-2 font-heading" style="color:var(--text);">
+            Thanks for visiting my portfolio <i class="fas fa-heart text-red-500"></i>
+        </p>
+        <p class="text-sm mb-6" style="color:var(--text-muted);">Crafted with clean code and coffee. Powered by Django.
+                <div class="flex flex-wrap justify-center gap-4 mb-8">
+                    {% if hero_section.resume %}
+                    <a href="{{ hero_section.resume.url }}" class="btn-glow inline-flex items-center" download>
+                        <i class="fas fa-file-pdf mr-2"></i> Download CV (PDF)
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'generate_cv_pdf' %}" class="glass px-6 py-2 inline-flex items-center hover:border-[#06b6d4]/50 transition-all duration-300" target="_blank" style="color:var(--text);">
+                        <i class="fas fa-eye mr-2 text-[#06b6d4]"></i> View Web CV
+                    </a>
+                </div>
+        </p>
+        <div class="text-xs text-center border-t pt-6 max-w-2xl mx-auto mt-4"
+            style="color:var(--text-muted);border-color:var(--border-sec);">
+            &copy; 2026 Geeta R Galagali. All rights reserved.<br />Developed by Geeta R Galagali.
+        </div>
+    </footer>
+
+    <!-- AI Chatbot Widget -->
+    <div id="ai-chat-container">
+        {% csrf_token %}
+        <div id="ai-chat-bubble" onclick="toggleChat()"
+            class="fixed bottom-8 right-8 w-16 h-16 btn-glow !p-0 !rounded-full text-white flex items-center justify-center text-2xl cursor-pointer shadow-lg z-[1000] hover:scale-110 transition-transform">
+            <i class="fas fa-robot"></i>
+        </div>
+
+        <div id="ai-chat-window"
+            class="fixed bottom-28 right-8 w-80 sm:w-96 h-[500px] glass hidden flex-col z-[1000] overflow-hidden"
+            style="background:var(--bg2) !important;">
+            <div class="bg-gradient-to-r from-brand to-brand-light text-white p-4 flex justify-between items-center font-bold"
+                style="border-bottom:1px solid var(--border-sec);">
+                <span><i class="fas fa-robot mr-2"></i> Geeta R Galagali's AI</span>
+                <span class="cursor-pointer text-2xl hover:text-blue-200 transition-colors"
+                    onclick="toggleChat()">&times;</span>
+            </div>
+            <div class="flex-1 p-4 overflow-y-auto flex flex-col gap-3" id="chatMessages" style="background:var(--bg);">
+                <div class="max-w-[80%] p-3 rounded-2xl text-sm glass rounded-tl-none" style="color:var(--text);">
+                    Hi there! I'm Geeta R Galagali's AI assistant. Ask me anything about her projects, skills, or
+                    experience!
+                </div>
+            </div>
+            <div class="p-4 flex gap-2" style="border-top:1px solid var(--border-sec);background:var(--bg2);">
+                <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)"
+                    class="glass-input flex-1 !py-2 !px-3 !rounded-lg text-sm">
+                <button onclick="sendMessage()" id="sendBtn" class="btn-glow !p-2 !px-4">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        // ── AOS ──
+        AOS.init({ duration: 800, once: true });
+
+        // ── Mobile nav toggle ──
+        document.getElementById('navToggle').addEventListener('click', function () {
+            var m = document.getElementById('mobileMenu');
+            m.classList.toggle('hidden');
+            m.classList.toggle('flex');
+        });
+
+        // ── THEME TOGGLE (works on ALL pages) ──
+        function applyTheme(theme) {
+            var html = document.documentElement;
+            var circle = document.getElementById('toggle-circle');
+            var circleMob = document.getElementById('toggle-circle-mobile');
+
+            if (theme === 'light') {
+                html.classList.add('light-mode');
+                if (circle) { circle.textContent = '☀️'; circle.style.transform = 'translateX(24px)'; }
+                if (circleMob) { circleMob.textContent = '☀️'; circleMob.style.transform = 'translateX(20px)'; }
+            } else {
+                html.classList.remove('light-mode');
+                if (circle) { circle.textContent = '🌙'; circle.style.transform = 'translateX(0)'; }
+                if (circleMob) { circleMob.textContent = '🌙'; circleMob.style.transform = 'translateX(0)'; }
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        function toggleTheme() {
+            var isLight = document.documentElement.classList.contains('light-mode');
+            applyTheme(isLight ? 'dark' : 'light');
+        }
+
+        // Apply on load
+        applyTheme(localStorage.getItem('theme') || 'dark');
+
+        // Bind buttons
+        var btn = document.getElementById('theme-toggle');
+        var btnMob = document.getElementById('theme-toggle-mobile');
+        if (btn) btn.addEventListener('click', toggleTheme);
+        if (btnMob) btnMob.addEventListener('click', toggleTheme);
+
+        // ── CHATBOT ──
+        function toggleChat() {
+            var w = document.getElementById('ai-chat-window');
+            w.style.display = w.style.display === 'flex' ? 'none' : 'flex';
+        }
+        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+
+        async function sendMessage() {
+            var i = document.getElementById('chatInput');
+            var msg = i.value.trim();
+            if (!msg) return;
+            i.value = '';
+            var mc = document.getElementById('chatMessages');
+            mc.innerHTML += `<div class="max-w-[80%] p-3 rounded-2xl text-sm bg-gradient-to-r from-brand to-brand-light text-white self-end rounded-br-none shadow-md">${escHtml(msg)}</div>`;
+            mc.scrollTop = mc.scrollHeight;
+            var tid = 'typing-' + Date.now();
+            mc.innerHTML += `<div class="typing-indicator" id="${tid}"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+            mc.scrollTop = mc.scrollHeight;
+            var csrf = document.querySelector('#ai-chat-container [name=csrfmiddlewaretoken]')?.value || '';
+            try {
+                var res = await fetch('/api/chat/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf },
+                    body: JSON.stringify({ message: msg })
+                });
+                var data = await res.json();
+                document.getElementById(tid)?.remove();
+                var color = 'var(--text)';
+                if (res.ok && data.reply)
+                    mc.innerHTML += `<div class="max-w-[80%] p-3 rounded-2xl text-sm glass rounded-tl-none" style="color:${color};">${data.reply}</div>`;
+                else
+                    mc.innerHTML += `<div class="max-w-[80%] p-3 rounded-2xl text-sm glass rounded-tl-none" style="color:#f87171;">Error: ${data.error}</div>`;
+            } catch (e) {
+                document.getElementById(tid)?.remove();
+                mc.innerHTML += `<div class="max-w-[80%] p-3 rounded-2xl text-sm glass rounded-tl-none" style="color:#f87171;">Connection error.</div>`;
+            }
+            mc.scrollTop = mc.scrollHeight;
+        }
+
+        function escHtml(t) {
+            return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+    </script>
+
+    <!-- Back to Top -->
+    <button id="backToTop" class="fixed bottom-8 left-8 w-12 h-12 glass flex items-center justify-center text-xl cursor-pointer shadow-lg z-[1000] opacity-0 translate-y-10 transition-all duration-300 hover:scale-110 active:scale-95" 
+        style="color:#06b6d4; border-color:rgba(6,182,212,0.3);">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    {% block extra_js %}{% endblock %}
+
+    <script>
+        // ── Back to Top ──
+        const backToTopBtn = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTopBtn.classList.remove('opacity-0', 'translate-y-10');
+            } else {
+                backToTopBtn.classList.add('opacity-0', 'translate-y-10');
+            }
+        });
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

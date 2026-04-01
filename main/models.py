@@ -25,9 +25,10 @@ class HeaderTitle(models.Model):
         return self.title
 
 class HeroSection(models.Model):
-    title = models.CharField(max_length=200, default="Suraj")
+    title = models.CharField(max_length=200, default="Geeta R Galagali")
     subtitle = models.CharField(max_length=200)
     image = ResizedImageField(size=[500, 500], upload_to='hero/', force_format='WEBP', quality=90, blank=True, null=True)
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True, help_text='Upload your professional PDF resume')
     is_active = models.BooleanField(default=True)
     
     # Counter data
@@ -119,6 +120,7 @@ class Certificate(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
+    technologies = models.CharField(max_length=500, blank=True, help_text="Comma-separated technologies (e.g. Django, React, Python)")
     demo_link = models.URLField(blank=True)
     github_link = models.URLField(blank=True)
     display_order = models.PositiveIntegerField(default=0)

@@ -6,8 +6,16 @@ from django.core.mail import BadHeaderError
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from weasyprint import HTML
+try:
+    from weasyprint import HTML
+except OSError:
+    HTML = None
+except ImportError:
+    HTML = None
 import io
+import json
+import os
+from openai import OpenAI
 
 
 def portfolio_home(request):
@@ -99,6 +107,10 @@ def generate_cv_pdf(request):
     # Render HTML template
     html_string = render_to_string('main/cv_template.html', context)
     
+    if HTML is None:
+        # Fallback: Render the professional HTML CV in the browser
+        return render(request, 'main/cv_template.html', context)
+        
     # Create PDF in memory without temporary files
     html = HTML(string=html_string, base_url=request.build_absolute_uri())
     
@@ -114,5 +126,62 @@ def generate_cv_pdf(request):
     response['Content-Disposition'] = 'attachment; filename="resume.pdf"'
     
     return response
+
+def portfolio_chat(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_message = data.get('message', '')
+            
+            projects = Project.objects.filter(is_active=True)
+            skills = Skill.objects.filter(is_active=True)
+            experience = TimelineItem.objects.filter(category='career', is_active=True)
+            about = AboutSection.objects.filter(is_active=True)
+            
+            context_text = "You are Geeta R Galagali's AI assistant for her portfolio website. Answer questions based on the following info:\n"
+            
+            context_text += "\nAbout Me:\n"
+            for a in about:
+                context_text += f"- {a.title}: {a.content}\n"
+                
+            context_text += "\nSkills:\n"
+            for s in skills:
+                context_text += f"- {s.name} ({s.proficiency}%)\n"
+                
+            context_text += "\nExperience:\n"
+            for e in experience:
+                context_text += f"- {e.title} ({e.period}): {e.description}\n"
+                
+            context_text += "\nProjects:\n"
+            for p in projects:
+                context_text += f"- {p.title}: {p.description}\n"
+                
+            from dotenv import load_dotenv
+            load_dotenv(override=True)
+            api_key = os.environ.get('OPENAI_API_KEY')
+            if api_key:
+                api_key = api_key.strip()
+            
+            # Configure the OpenAI library to use Groq's endpoint instead
+            client = OpenAI(
+                api_key=api_key,
+                base_url="https://api.groq.com/openai/v1"
+            )
+            
+            response = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[
+                    {"role": "system", "content": context_text},
+                    {"role": "user", "content": user_message}
+                ]
+            )
+            
+            ai_message = response.choices[0].message.content
+            return JsonResponse({'reply': ai_message})
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+            
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 

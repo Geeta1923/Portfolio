@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Resume - Suraj Kumar</title>
+    <title>Professional Resume - Geeta R Galagali</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -289,6 +289,36 @@
             .main-content {
                 padding: 20px;
             }
+            .print-btn {
+                display: none !important;
+            }
+        }
+
+        /* Floating Print Button */
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #6c63ff;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.4);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.6);
+            background: #5a52e0;
         }
     </style>
 </head>
@@ -306,7 +336,7 @@
                 {% endwith %}
             </div>
             
-            <h1 class="name">SURAJ KUMAR</h1>
+            <h1 class="name">GEETA R GALAGALI</h1>
             
             {% with hero=herosection_set.first %}
             <h3 class="title">{{ hero.subtitle|default:"CSE(AIML) bachelors of technology" }}</h3>
@@ -426,5 +456,10 @@
             
         </main>
     </div>
+
+    <!-- Floating Print Button -->
+    <button onclick="window.print()" class="print-btn">
+        <i class="fas fa-print"></i> Print / Save as PDF
+    </button>
 </body>
 </html>
