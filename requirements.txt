@@ -26,3 +26,4 @@ zopfli==0.2.3.post1
 
 dj-database-url
 psycopg2-binary
+openai>=1.0.0
