@@ -90,10 +90,11 @@ WSGI_APPLICATION = "portfolio_site.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 import dj_database_url
 
+import dj_database_url
+
 DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600,
+    'default': dj_database_url.config(
+        default='postgresql://portfolio_db_e3s7_user:MJbiEFEIEg8Y5wMSDD58TvzSxVeZeK6z@dpg-d77umlma2pns73b1ve6g-a/portfolio_db_e3s7'
     )
 }
 
